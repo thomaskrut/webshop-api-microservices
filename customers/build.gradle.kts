@@ -31,3 +31,9 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+tasks {
+    bootJar {
+        archiveFileName.set("${archiveBaseName.get()}.${archiveExtension.get()}")
+    }
+}
