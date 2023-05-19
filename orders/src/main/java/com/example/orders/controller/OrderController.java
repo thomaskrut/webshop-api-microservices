@@ -9,11 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
 public class OrderController {
 
     private final CustomerOrderRepository customerOrderRepository;
-
     public OrderController(CustomerOrderRepository customerOrderRepository) {
         this.customerOrderRepository = customerOrderRepository;
     }
