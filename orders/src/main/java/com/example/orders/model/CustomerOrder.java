@@ -38,6 +38,11 @@ public class CustomerOrder {
         this.date = date;
     }
 
+    public CustomerOrder(long customerId) {
+        this.customerId = customerId;
+        this.date = LocalDate.now();
+    }
+
     public void addOrderEntry(OrderEntry orderEntry) {
 
         orderEntries.stream()
@@ -48,21 +53,6 @@ public class CustomerOrder {
 
 
     }
-
-    public Double getTotal() {
-        //return orderEntries.stream().mapToDouble(e -> e.getItem().getPrice() * e.getQuantity()).sum();
-        return null;
-    }
-
-    public String getTotalString() {
-        //return String.format("%.2f", orderEntries.stream().mapToDouble(e -> e.getItem().getPrice() * e.getQuantity()).sum());
-        return null;
-    }
-
-    public int getNumberOfItems() {
-        return orderEntries.stream().mapToInt(OrderEntry::getQuantity).sum();
-    }
-
 
 
 }
