@@ -24,6 +24,8 @@ public class CustomerController {
 
     @GetMapping("/customers/{id}")
     public Customer getCustomerById(@PathVariable long id) {
+        System.out.println("Customer ID: " + id);
+        if (customerRepository.findById(id).isEmpty()) return new Customer(-1, "Customer not found", "Customer not found", "Customer not found");
         return customerRepository.findById(id).get();
     }
 

@@ -1,12 +1,10 @@
 package com.example.orders.controller;
 
-import com.example.orders.model.CustomerOrder;
-import com.example.orders.model.NewOrderEntryRequest;
-import com.example.orders.model.NewOrderRequest;
-import com.example.orders.model.OrderEntry;
+import com.example.orders.model.*;
 import com.example.orders.repository.CustomerOrderRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -14,9 +12,11 @@ import java.util.List;
 public class OrderController {
 
     private final CustomerOrderRepository customerOrderRepository;
+    private final RestTemplate restTemplate;
 
-    public OrderController(CustomerOrderRepository customerOrderRepository) {
+    public OrderController(CustomerOrderRepository customerOrderRepository, RestTemplate restTemplate) {
         this.customerOrderRepository = customerOrderRepository;
+        this.restTemplate = restTemplate;
     }
 
     @GetMapping("/orders")
@@ -31,7 +31,13 @@ public class OrderController {
 
     @PostMapping("/orders")
     public ResponseEntity<String> createOrder(@RequestBody NewOrderRequest req) {
-        System.out.println(req.getCustomerId());
+
+        Customer customer = restTemplate.getForObject("http://customers:8080/customers/" + req.getCustomerId(), Customer.class);
+        assert customer != null;
+        if (customer.getFirstName().equals("Customer not found")) {
+            return ResponseEntity.badRequest().body("Customer not found");
+        }
+
         CustomerOrder newCustomerOrder = new CustomerOrder(req.getCustomerId());
         customerOrderRepository.save(newCustomerOrder);
         return ResponseEntity.ok("Order " + newCustomerOrder.getId() + " created for customer " + req.getCustomerId() + ".");
