@@ -19,17 +19,17 @@ public class OrderController {
         this.customerOrderRepository = customerOrderRepository;
     }
 
-    @GetMapping("/orders")
+    @GetMapping("/")
     public List<CustomerOrder> getAllOrders() {
         return customerOrderRepository.findAll();
     }
 
-    @GetMapping("/orders/{customerId}")
+    @GetMapping("/{customerId}")
     public List<CustomerOrder> getOrdersByCustomerId(@PathVariable long customerId) {
         return customerOrderRepository.findByCustomerId(customerId);
     }
 
-    @PostMapping("/orders")
+    @PostMapping("/")
     public ResponseEntity<String> createOrder(@RequestBody NewOrderRequest req) {
         System.out.println(req.getCustomerId());
         CustomerOrder newCustomerOrder = new CustomerOrder(req.getCustomerId());
@@ -37,7 +37,7 @@ public class OrderController {
         return ResponseEntity.ok("Order " + newCustomerOrder.getId() + " created for customer " + req.getCustomerId() + ".");
     }
 
-    @PostMapping("/orders/{orderId}")
+    @PostMapping("/{orderId}")
     public ResponseEntity<String> addOrderEntry(@PathVariable long orderId, @RequestBody NewOrderEntryRequest req) {
 
         if (customerOrderRepository.findById(orderId).isEmpty()) {

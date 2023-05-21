@@ -17,17 +17,17 @@ public class CustomerController {
         this.customerRepository = customerRepository;
     }
 
-    @GetMapping("/customers")
+    @GetMapping("/")
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
 
-    @GetMapping("/customers/{id}")
+    @GetMapping("/{id}")
     public Customer getCustomerById(@PathVariable long id) {
         return customerRepository.findById(id).get();
     }
 
-    @PostMapping("/customers")
+    @PostMapping("/")
     public ResponseEntity<String> createCustomer(@RequestBody Customer customer) {
 
         if (customer.getFirstName().isBlank() || customer.getLastName().isBlank()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid name");

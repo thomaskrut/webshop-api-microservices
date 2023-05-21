@@ -18,17 +18,17 @@ public class ItemController {
         this.itemRepository = itemRepository;
     }
 
-    @GetMapping("/items")
+    @GetMapping("/")
     public List<Item> getAllItems() {
         return itemRepository.findAll();
     }
 
-    @GetMapping("/items/{id}")
+    @GetMapping("/{id}")
     public Item getItemById(@PathVariable long id) {
         return itemRepository.findById(id).get();
     }
 
-    @PostMapping("/items")
+    @PostMapping("/")
     public ResponseEntity<String> createItem(@RequestBody Item item) {
 
         if (item.getName().isBlank()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid product name");
@@ -40,7 +40,7 @@ public class ItemController {
     }
 
     /*
-    @PostMapping("/items/buy")
+    @PostMapping("/buy")
     public ResponseEntity<String> buyItem(@RequestBody AddItemRequest request) {
 
         Item item = itemRepository.findById(request.getItemId()).orElse(null);
