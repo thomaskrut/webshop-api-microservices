@@ -45,5 +45,5 @@ gradle-app.setting
 hs_err_pid*
 replay_pid*
 
-# Ignore docker environment variables file
-.env
+# Ignore docker environment variable files
+*.env
