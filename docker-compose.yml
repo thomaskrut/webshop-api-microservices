@@ -25,12 +25,8 @@ services:
 
   # Databases
   customers-db:
-    #platform: linux/amd64
     image: mysql/mysql-server:8.0.25
     container_name: customers-db
-    restart: always
-    #volumes:
-    #  - ./sql/1-init-db.sql:/docker-entrypoint-initdb.d/1-init-db.sql
     env_file:
       - ./env/customers.env
     ports:
@@ -40,11 +36,8 @@ services:
         ipv4_address: 10.6.2.1
 
   items-db:
-    #platform: linux/amd64
     image: mysql/mysql-server:8.0.25
     container_name: items-db
-    #volumes:
-    #  - ./sql/1-init-db.sql:/docker-entrypoint-initdb.d/1-init-db.sql
     env_file:
       - ./env/items.env
     ports:
@@ -54,11 +47,8 @@ services:
         ipv4_address: 10.6.2.2
 
   orders-db:
-    #platform: linux/amd64
     image: mysql/mysql-server:8.0.25
     container_name: orders-db
-    #volumes:
-    #  - ./sql/1-init-db.sql:/docker-entrypoint-initdb.d/1-init-db.sql
     env_file:
       - ./env/orders.env
     ports:
@@ -77,8 +67,6 @@ services:
     restart: always
     ports:
       - "8080"
-    depends_on:
-      - customers-db
     environment:
       MYSQL_HOST: 10.6.2.1
     env_file:
@@ -94,8 +82,6 @@ services:
     restart: always
     ports:
       - "8080"
-    depends_on:
-      - items-db
     environment:
       MYSQL_HOST: 10.6.2.2
     env_file:
@@ -111,8 +97,6 @@ services:
     restart: always
     ports:
       - "8080"
-    depends_on:
-      - orders-db
     environment:
         MYSQL_HOST: 10.6.2.3
     env_file:
