@@ -48,9 +48,5 @@ public class OrderController {
         currentOrder.addOrderEntry(new OrderEntry(req.getItemId(), req.getQuantity()));
         customerOrderRepository.save(currentOrder);
         return ResponseEntity.ok("Entry added to order " + orderId);
-
     }
-
 }
-
-
