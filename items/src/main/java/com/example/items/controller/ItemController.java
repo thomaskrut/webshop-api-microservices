@@ -25,6 +25,7 @@ public class ItemController {
 
     @GetMapping("/{id}")
     public Item getItemById(@PathVariable long id) {
+        if (itemRepository.findById(id).isEmpty()) return new Item("Item not found", 0.0);
         return itemRepository.findById(id).get();
     }
 
@@ -38,30 +39,5 @@ public class ItemController {
         itemRepository.save(item);
         return ResponseEntity.ok("Product added");
     }
-
-    /*
-    @PostMapping("/buy")
-    public ResponseEntity<String> buyItem(@RequestBody AddItemRequest request) {
-
-        Item item = itemRepository.findById(request.getItemId()).orElse(null);
-        if (item == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product not found");
-
-        Customer customer = customerRepository.findById(request.getCustomerId()).orElse(null);
-        if (customer == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Customer not found");
-
-        CustomerOrder order = customerOrderRepository.findById(request.getOrderId()).orElse(null);
-        if (order != null) {
-            if (order.getCustomer().getId() != request.getCustomerId()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Customer does not own order");
-        } else {
-            order = customer.addNewOrder(new CustomerOrder(LocalDate.now()));
-        }
-
-        order.addOrderEntry(new OrderEntry(item, request.getQuantity()));
-
-        customerOrderRepository.save(order);
-
-        return ResponseEntity.status(HttpStatus.OK).body("Product added to order #" + order.getId());
-    }
-*/
 
 }

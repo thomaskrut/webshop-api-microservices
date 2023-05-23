@@ -30,18 +30,18 @@ public class OrderController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<String> createOrder(@RequestBody NewOrderRequest req) {
+    public ResponseEntity<String> createOrder(@RequestParam long customerId) {
 
-        System.out.println("Customer ID in order request: " + req.getCustomerId());
-        Customer customer = restTemplate.getForObject("http://customers-service:8080/" + req.getCustomerId(), Customer.class);
+        System.out.println("Customer ID in order request: " + customerId);
+        Customer customer = restTemplate.getForObject("http://customers-service:8080/" + customerId, Customer.class);
         assert customer != null;
         if (customer.getFirstName().equals("Customer not found")) {
             return ResponseEntity.badRequest().body("Customer not found");
         }
 
-        CustomerOrder newCustomerOrder = new CustomerOrder(req.getCustomerId());
+        CustomerOrder newCustomerOrder = new CustomerOrder(customerId);
         customerOrderRepository.save(newCustomerOrder);
-        return ResponseEntity.ok("Order " + newCustomerOrder.getId() + " created for customer " + req.getCustomerId() + ".");
+        return ResponseEntity.ok("Order " + newCustomerOrder.getId() + " created for customer " + customerId + ".");
     }
 
     @PostMapping("/{orderId}")
@@ -49,6 +49,12 @@ public class OrderController {
 
         if (customerOrderRepository.findById(orderId).isEmpty()) {
             return ResponseEntity.badRequest().body("Order not found");
+        }
+
+        Item item = restTemplate.getForObject("http://items-service:8080/" + req.getItemId(), Item.class);
+        assert item != null;
+        if (item.getName().equals("Item not found")) {
+            return ResponseEntity.badRequest().body("Item not found");
         }
 
         CustomerOrder currentOrder = customerOrderRepository.findById(orderId).get();
