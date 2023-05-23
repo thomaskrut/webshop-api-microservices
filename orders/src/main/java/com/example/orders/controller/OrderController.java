@@ -59,6 +59,7 @@ public class OrderController {
         }
 
         Item item = restTemplate.getForObject(itemsServiceUrl + req.getItemId(), Item.class);
+
         assert item != null;
         if (item.getName().equals("Item not found")) {
             return ResponseEntity.badRequest().body("Item not found");

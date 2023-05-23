@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 
 public class Item {
 
@@ -28,5 +27,4 @@ public class Item {
     public String getPriceAsString(){
         return String.format("%.2f", price);
     }
-
 }
