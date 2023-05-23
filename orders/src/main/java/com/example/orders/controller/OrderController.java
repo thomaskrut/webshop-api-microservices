@@ -2,6 +2,7 @@ package com.example.orders.controller;
 
 import com.example.orders.model.*;
 import com.example.orders.repository.CustomerOrderRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -13,6 +14,12 @@ public class OrderController {
 
     private final CustomerOrderRepository customerOrderRepository;
     private final RestTemplate restTemplate;
+
+    @Value("${customers-service.url}")
+    private String customersServiceUrl;
+
+    @Value("${items-service.url}")
+    private String itemsServiceUrl;
 
     public OrderController(CustomerOrderRepository customerOrderRepository, RestTemplate restTemplate) {
         this.customerOrderRepository = customerOrderRepository;
@@ -33,7 +40,7 @@ public class OrderController {
     public ResponseEntity<String> createOrder(@RequestParam long customerId) {
 
         System.out.println("Customer ID in order request: " + customerId);
-        Customer customer = restTemplate.getForObject("http://customers-service:8080/" + customerId, Customer.class);
+        Customer customer = restTemplate.getForObject(customersServiceUrl + customerId, Customer.class);
         assert customer != null;
         if (customer.getFirstName().equals("Customer not found")) {
             return ResponseEntity.badRequest().body("Customer not found");
@@ -51,7 +58,7 @@ public class OrderController {
             return ResponseEntity.badRequest().body("Order not found");
         }
 
-        Item item = restTemplate.getForObject("http://items-service:8080/" + req.getItemId(), Item.class);
+        Item item = restTemplate.getForObject(itemsServiceUrl + req.getItemId(), Item.class);
         assert item != null;
         if (item.getName().equals("Item not found")) {
             return ResponseEntity.badRequest().body("Item not found");

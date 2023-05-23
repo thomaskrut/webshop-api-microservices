@@ -74,5 +74,7 @@ services:
     container_name: orders-service
     environment:
         MYSQL_HOST: orders-db
+        ITEMS_SERVICE_URL: http://items-service:8080/
+        CUSTOMERS_SERVICE_URL: http://customers-service:8080/
     env_file:
       - ./env/orders.env
