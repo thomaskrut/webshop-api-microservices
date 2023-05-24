@@ -16,6 +16,11 @@ services:
   customers-db:
     image: mysql/mysql-server:8.0.25
     container_name: customers-db
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
     env_file:
       - ./env/customers.env
     ports:
@@ -26,6 +31,11 @@ services:
   items-db:
     image: mysql/mysql-server:8.0.25
     container_name: items-db
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
     env_file:
       - ./env/items.env
     ports:
@@ -36,6 +46,11 @@ services:
   orders-db:
     image: mysql/mysql-server:8.0.25
     container_name: orders-db
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
     env_file:
       - ./env/orders.env
     ports:
@@ -52,7 +67,8 @@ services:
     ports:
       - "8080"
     depends_on:
-      - customers-db
+      customers-db:
+        condition: service_healthy
     container_name: customers-service
     environment:
       MYSQL_HOST: customers-db
@@ -67,7 +83,8 @@ services:
     ports:
       - "8080"
     depends_on:
-      - items-db
+      items-db:
+        condition: service_healthy
     container_name: items-service
     environment:
       MYSQL_HOST: items-db
@@ -82,7 +99,8 @@ services:
     ports:
       - "8080"
     depends_on:
-      - orders-db
+      orders-db:
+        condition: service_healthy
     container_name: orders-service
     environment:
         MYSQL_HOST: orders-db
