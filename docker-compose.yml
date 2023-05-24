@@ -20,6 +20,8 @@ services:
       - ./env/customers.env
     ports:
       - "3306"
+    volumes:
+      - customers-data:/var/lib/mysql
 
   items-db:
     image: mysql/mysql-server:8.0.25
@@ -28,6 +30,8 @@ services:
       - ./env/items.env
     ports:
       - "3306"
+    volumes:
+      - items-data:/var/lib/mysql
 
   orders-db:
     image: mysql/mysql-server:8.0.25
@@ -36,6 +40,8 @@ services:
       - ./env/orders.env
     ports:
       - "3306"
+    volumes:
+      - orders-data:/var/lib/mysql
 
   # Java services
   customers:
@@ -45,6 +51,8 @@ services:
     restart: always
     ports:
       - "8080"
+    depends_on:
+      - customers-db
     container_name: customers-service
     environment:
       MYSQL_HOST: customers-db
@@ -58,6 +66,8 @@ services:
     restart: always
     ports:
       - "8080"
+    depends_on:
+      - items-db
     container_name: items-service
     environment:
       MYSQL_HOST: items-db
@@ -71,6 +81,8 @@ services:
     restart: always
     ports:
       - "8080"
+    depends_on:
+      - orders-db
     container_name: orders-service
     environment:
         MYSQL_HOST: orders-db
@@ -78,3 +90,8 @@ services:
         CUSTOMERS_SERVICE_URL: http://customers-service:8080/
     env_file:
       - ./env/orders.env
+
+volumes:
+  customers-data:
+  items-data:
+  orders-data:
