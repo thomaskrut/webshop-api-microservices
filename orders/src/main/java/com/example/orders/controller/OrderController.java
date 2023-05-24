@@ -3,11 +3,14 @@ package com.example.orders.controller;
 import com.example.orders.model.*;
 import com.example.orders.repository.CustomerOrderRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 public class OrderController {
@@ -39,11 +42,11 @@ public class OrderController {
     @PostMapping("/")
     public ResponseEntity<String> createOrder(@RequestParam long customerId) {
 
-        System.out.println("Customer ID in order request: " + customerId);
-        Customer customer = restTemplate.getForObject(customersServiceUrl + customerId, Customer.class);
-        assert customer != null;
-        if (customer.getFirstName().equals("Customer not found")) {
-            return ResponseEntity.badRequest().body("Customer not found");
+        try {
+            restTemplate.getForEntity(customersServiceUrl + customerId, Object.class);
+        } catch (HttpClientErrorException e) {
+
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
         CustomerOrder newCustomerOrder = new CustomerOrder(customerId);
@@ -58,10 +61,9 @@ public class OrderController {
             return ResponseEntity.badRequest().body("Order not found");
         }
 
-        Item item = restTemplate.getForObject(itemsServiceUrl + req.getItemId(), Item.class);
-
-        assert item != null;
-        if (item.getName().equals("Item not found")) {
+        try {
+            restTemplate.getForEntity(itemsServiceUrl + req.getItemId(), Object.class);
+        } catch (HttpClientErrorException e) {
             return ResponseEntity.badRequest().body("Item not found");
         }
 

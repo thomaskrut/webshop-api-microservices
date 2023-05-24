@@ -24,9 +24,9 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public Item getItemById(@PathVariable long id) {
-        if (itemRepository.findById(id).isEmpty()) return new Item("Item not found", 0.0);
-        return itemRepository.findById(id).get();
+    public ResponseEntity<Item> getItemById(@PathVariable long id) {
+        if (itemRepository.findById(id).isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.ok(itemRepository.findById(id).get());
     }
 
     @PostMapping("/")

@@ -23,10 +23,10 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public Customer getCustomerById(@PathVariable long id) {
+    public ResponseEntity<Customer> getCustomerById(@PathVariable long id) {
         System.out.println("Customer ID: " + id);
-        if (customerRepository.findById(id).isEmpty()) return new Customer(-1, "Customer not found", "Customer not found", "Customer not found");
-        return customerRepository.findById(id).get();
+        if (customerRepository.findById(id).isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.ok(customerRepository.findById(id).get());
     }
 
     @PostMapping("/")
