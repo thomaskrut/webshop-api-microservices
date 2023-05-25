@@ -19,8 +19,8 @@ services:
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       timeout: 45s
-      interval: 10s
-      retries: 10
+      interval: 2s
+      retries: 30
     env_file:
       - ./env/customers.env
     ports:
@@ -34,8 +34,8 @@ services:
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       timeout: 45s
-      interval: 10s
-      retries: 10
+      interval: 2s
+      retries: 30
     env_file:
       - ./env/items.env
     ports:
@@ -49,8 +49,8 @@ services:
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       timeout: 45s
-      interval: 10s
-      retries: 10
+      interval: 2s
+      retries: 30
     env_file:
       - ./env/orders.env
     ports:
