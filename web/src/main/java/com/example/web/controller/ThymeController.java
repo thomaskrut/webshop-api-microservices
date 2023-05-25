@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Controller
@@ -42,6 +43,21 @@ public class ThymeController {
         this.restTemplate = restTemplate;
     }
 
+    private CustomerList getAllCustomers() {
+        CustomerList customers = restTemplate.getForObject(customersServiceUrl, CustomerList.class);
+        return Objects.requireNonNullElseGet(customers, CustomerList::new);
+    }
+
+    private ItemList getAllItems() {
+        ItemList items = restTemplate.getForObject(itemsServiceUrl, ItemList.class);
+        return Objects.requireNonNullElseGet(items, ItemList::new);
+    }
+
+    private OrderList getAllOrders() {
+        OrderList orders = restTemplate.getForObject(ordersServiceUrl, OrderList.class);
+        return Objects.requireNonNullElseGet(orders, OrderList::new);
+    }
+
     @RequestMapping({"/index", "/", ""})
     public String getIndex() {
         return "index.html";
@@ -50,11 +66,9 @@ public class ThymeController {
     @RequestMapping({"/customers", "/addorder"})
     public String getAllCustomers(Model model) {
 
-        CustomerList customers = restTemplate.getForObject(customersServiceUrl, CustomerList.class);
-        OrderList orders = restTemplate.getForObject(ordersServiceUrl, OrderList.class);
+        CustomerList customers = getAllCustomers();
+        OrderList orders = getAllOrders();
 
-        assert customers != null;
-        assert orders != null;
         customers.getCustomerList().forEach(c -> {
             c.setOrders(orders.getOrderList().stream().filter(o -> o.getCustomerId() == c.getId()).count());
         });
@@ -70,8 +84,7 @@ public class ThymeController {
     @RequestMapping("/items")
     public String getAllItems(Model model) {
 
-        ItemList items = restTemplate.getForObject(itemsServiceUrl, ItemList.class);
-        assert items != null;
+        ItemList items = getAllItems();
 
         model.addAttribute("allItemsList", items.getItemList());
         model.addAttribute("nameTitle", "name");
@@ -81,7 +94,6 @@ public class ThymeController {
     }
 
 
-
     @RequestMapping("/orders")
     public String getAllOrders(
             @RequestParam(required = false, defaultValue = "-1") long customerId,
@@ -89,10 +101,8 @@ public class ThymeController {
             @RequestParam(required = false, defaultValue = "desc") String order,
             Model model) {
 
-        OrderList orders = restTemplate.getForObject(ordersServiceUrl, OrderList.class);
-        assert orders != null;
-        ItemList items = restTemplate.getForObject(itemsServiceUrl, ItemList.class);
-        assert items != null;
+        OrderList orders = getAllOrders();
+        ItemList items = getAllItems();
 
         orders.getOrderList().forEach(o -> {
             o.getOrderEntries().forEach(oe -> {
@@ -135,21 +145,19 @@ public class ThymeController {
 
     @RequestMapping("/order")
     public String getOrder(@RequestParam long orderId, Model model) {
-        OrderList orders = restTemplate.getForObject(ordersServiceUrl, OrderList.class);
-        assert orders != null;
-        CustomerOrder order = orders.getOrderList().stream().filter(o -> o.getId() == orderId).findFirst().get();
 
-        ItemList items = restTemplate.getForObject(itemsServiceUrl, ItemList.class);
-        assert items != null;
+        OrderList orders = getAllOrders();
 
+        CustomerOrder order = orders.getOrderList().stream().filter(o -> o.getId() == orderId).findFirst().orElse(new CustomerOrder());
 
-            order.getOrderEntries().forEach(oe -> {
-                Item item = items.getItemList().stream().filter(i -> i.getId() == oe.getItemId()).findFirst().orElse(null);
-                assert item != null;
-                oe.setPrice(item.getPrice());
-                oe.setItemName(item.getName());
+        ItemList items = getAllItems();
 
-            });
+        order.getOrderEntries().forEach(oe -> {
+            Item item = items.getItemList().stream().filter(i -> i.getId() == oe.getItemId()).findFirst().orElse(new Item());
+            oe.setPrice(item.getPrice());
+            oe.setItemName(item.getName());
+
+        });
 
         model.addAttribute("items", items.getItemList());
         model.addAttribute("order", order);
@@ -198,31 +206,16 @@ public class ThymeController {
         restTemplate.postForObject(itemsServiceUrl, i, String.class);
         return confirmItem(model, i, "Item successfully added");
     }
-/*
-    */
+    /*
+     */
 
     @GetMapping("/adjustorder")
     public String adjustOrder(@RequestParam long orderId,
-                              @RequestParam String itemId,
+                              @RequestParam int itemId,
                               @RequestParam int quantity,
                               Model model) {
 
-        long itemIdLong;
-        try {
-            itemIdLong = Long.parseLong(itemId);
-        } catch (NumberFormatException e) {
-            return getOrder(orderId, model);
-        }
-
-        OrderList orders = restTemplate.getForObject(ordersServiceUrl, OrderList.class);
-        assert orders != null;
-        CustomerOrder order = orders.getOrderList().stream().filter(o -> o.getId() == orderId).findFirst().get();
-
-        ItemList items = restTemplate.getForObject(itemsServiceUrl, ItemList.class);
-        assert items != null;
-        Item item = items.getItemList().stream().filter(i -> i.getId() == itemIdLong).findFirst().get();
-
-        restTemplate.put(ordersServiceUrl + "/" + orderId, new NewOrderEntryRequest(item.getId(), quantity));
+        restTemplate.put(ordersServiceUrl + "/" + orderId, new NewOrderEntryRequest(itemId, quantity));
 
         return getOrder(orderId, model);
     }
@@ -233,14 +226,15 @@ public class ThymeController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("customerId", Long.toString(customerId));
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-        restTemplate.postForObject(ordersServiceUrl, request, String.class);
+        CustomerOrder newOrder = restTemplate.postForObject(ordersServiceUrl, request, CustomerOrder.class);
 
-        return getAllOrders(customerId, "id", "desc", model);
+        assert newOrder != null;
+        return getOrder(newOrder.getId(), model);
 
     }
 }

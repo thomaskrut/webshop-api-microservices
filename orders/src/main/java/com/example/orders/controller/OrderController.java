@@ -40,18 +40,18 @@ public class OrderController {
     }
 
     @PostMapping("/")
-    public String createOrder(@RequestParam long customerId) {
+    public CustomerOrder createOrder(@RequestParam long customerId) {
 
         try {
             restTemplate.getForEntity(customersServiceUrl + customerId, Object.class);
         } catch (HttpClientErrorException e) {
 
-            return e.getMessage();
+            return null;
         }
 
         CustomerOrder newCustomerOrder = new CustomerOrder(customerId);
         customerOrderRepository.save(newCustomerOrder);
-        return "Order " + newCustomerOrder.getId() + " created for customer " + customerId + ".";
+        return newCustomerOrder;
     }
 
     @PostMapping("/{orderId}")
