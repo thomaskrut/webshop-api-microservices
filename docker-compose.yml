@@ -71,8 +71,6 @@ services:
       ITEMS_SERVICE_URL: http://items-service:8080/
       CUSTOMERS_SERVICE_URL: http://customers-service:8080/
       ORDERS_SERVICE_URL: http://orders-service:8080/
-    env_file:
-      - ./env/customers.env
 
   customers:
     build:
