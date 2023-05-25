@@ -10,7 +10,7 @@ services:
     volumes:
       - ./reverse_proxy.conf:/etc/nginx/nginx.conf
     ports:
-      - "8080:8080"
+      - "8080"
 
   # Databases
   customers-db:
@@ -65,7 +65,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "8080"
+      - "8080:8080"
     container_name: web-service
     environment:
       ITEMS_SERVICE_URL: http://items-service:8080/
