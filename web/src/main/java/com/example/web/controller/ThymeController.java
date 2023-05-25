@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Controller
 
+
 public class ThymeController {
 
     @Value("${customers-service.url}")
@@ -41,7 +42,7 @@ public class ThymeController {
         this.restTemplate = restTemplate;
     }
 
-    @RequestMapping("/index")
+    @RequestMapping({"/index", "/", ""})
     public String getIndex() {
         return "index.html";
     }
