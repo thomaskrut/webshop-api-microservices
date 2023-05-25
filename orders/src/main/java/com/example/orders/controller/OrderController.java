@@ -30,8 +30,8 @@ public class OrderController {
     }
 
     @GetMapping("/")
-    public List<CustomerOrder> getAllOrders() {
-        return customerOrderRepository.findAll();
+    public OrderList getAllOrders() {
+        return new OrderList(customerOrderRepository.findAll());
     }
 
     @GetMapping("/{customerId}")
@@ -40,36 +40,57 @@ public class OrderController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<String> createOrder(@RequestParam long customerId) {
+    public String createOrder(@RequestParam long customerId) {
 
         try {
             restTemplate.getForEntity(customersServiceUrl + customerId, Object.class);
         } catch (HttpClientErrorException e) {
 
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return e.getMessage();
         }
 
         CustomerOrder newCustomerOrder = new CustomerOrder(customerId);
         customerOrderRepository.save(newCustomerOrder);
-        return ResponseEntity.ok("Order " + newCustomerOrder.getId() + " created for customer " + customerId + ".");
+        return "Order " + newCustomerOrder.getId() + " created for customer " + customerId + ".";
     }
 
     @PostMapping("/{orderId}")
-    public ResponseEntity<String> addOrderEntry(@PathVariable long orderId, @RequestBody NewOrderEntryRequest req) {
+    public String addOrderEntry(@PathVariable long orderId, @RequestBody NewOrderEntryRequest req) {
 
         if (customerOrderRepository.findById(orderId).isEmpty()) {
-            return ResponseEntity.badRequest().body("Order not found");
+            return "Order not found";
         }
 
         try {
             restTemplate.getForEntity(itemsServiceUrl + req.getItemId(), Object.class);
         } catch (HttpClientErrorException e) {
-            return ResponseEntity.badRequest().body("Item not found");
+            return "Item not found";
         }
 
         CustomerOrder currentOrder = customerOrderRepository.findById(orderId).get();
         currentOrder.addOrderEntry(new OrderEntry(req.getItemId(), req.getQuantity()));
         customerOrderRepository.save(currentOrder);
-        return ResponseEntity.ok("Entry added to order " + orderId);
+        return "Entry added to order " + orderId;
     }
+
+
+    @PutMapping("/{orderId}")
+    public String adjustOrderEntry(@PathVariable long orderId, @RequestBody NewOrderEntryRequest req) {
+        if (customerOrderRepository.findById(orderId).isEmpty()) {
+            return "Order not found";
+        }
+
+        try {
+            restTemplate.getForEntity(itemsServiceUrl + req.getItemId(), Object.class);
+        } catch (HttpClientErrorException e) {
+            return "Item not found";
+        }
+
+        CustomerOrder currentOrder = customerOrderRepository.findById(orderId).get();
+        currentOrder.addOrderEntry(new OrderEntry(req.getItemId(), req.getQuantity()));
+        customerOrderRepository.save(currentOrder);
+        return "Entry added to order " + orderId;
+
+    }
+
 }

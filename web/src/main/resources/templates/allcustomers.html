@@ -50,8 +50,8 @@
             <td th:text="${cus.firstName}"></td>
             <td th:text="${cus.lastName}"></td>
             <td th:text="${cus.ssn}"></td>
-            <td style="text-align: right"><a th:href="@{/thyme/orders(customerId=${cus.id})}" th:text="${cus.orders == null ? '0' : cus.orders.size()}"></a></td>
-            <td class="adjust-quantity"><a th:href="@{/thyme/neworder(customerId=${cus.id})}">+</a></td>
+            <td style="text-align: right"><a th:href="@{/orders(customerId=${cus.id})}" th:text="${cus.orders}"></a></td>
+            <td class="adjust-quantity"><a th:href="@{/neworder(customerId=${cus.id})}">+</a></td>
         </tr>
         </tbody>
     </table>

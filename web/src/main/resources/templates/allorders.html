@@ -38,18 +38,18 @@
                 <table class="table-style">
                     <tbody>
                     <tr class="table-header">
-                        <td><a th:class="${sortby == 'id' ? 'active' : 'passive'}" th:href="@{/thyme/orders(customerId=${customerId}, sortby='id', order=${newOrder})}">Order ID</a></td>
-                        <td><a th:class="${sortby == 'customer' ? 'active' : 'passive'}" th:href="@{/thyme/orders(customerId=${customerId}, sortby='customer', order=${newOrder})}">Customer ID</a></td>
-                        <td><a th:class="${sortby == 'date' ? 'active' : 'passive'}" th:href="@{/thyme/orders(customerId=${customerId}, sortby='date', order=${newOrder})}">Order date</a></td>
-                        <td class="right"><a th:class="${sortby == 'items' ? 'active' : 'passive'}" th:href="@{/thyme/orders(customerId=${customerId}, sortby='items', order=${newOrder})}">Items</a></td>
-                        <td class="right"><a th:class="${sortby == 'total' ? 'active' : 'passive'}" th:href="@{/thyme/orders(customerId=${customerId}, sortby='total', order=${newOrder})}">Total</a></td>
+                        <td><a th:class="${sortby == 'id' ? 'active' : 'passive'}" th:href="@{/orders(customerId=${customerId}, sortby='id', order=${newOrder})}">Order ID</a></td>
+                        <td><a th:class="${sortby == 'customer' ? 'active' : 'passive'}" th:href="@{/orders(customerId=${customerId}, sortby='customer', order=${newOrder})}">Customer ID</a></td>
+                        <td><a th:class="${sortby == 'date' ? 'active' : 'passive'}" th:href="@{/orders(customerId=${customerId}, sortby='date', order=${newOrder})}">Order date</a></td>
+                        <td class="right"><a th:class="${sortby == 'items' ? 'active' : 'passive'}" th:href="@{/orders(customerId=${customerId}, sortby='items', order=${newOrder})}">Items</a></td>
+                        <td class="right"><a th:class="${sortby == 'total' ? 'active' : 'passive'}" th:href="@{/orders(customerId=${customerId}, sortby='total', order=${newOrder})}">Total</a></td>
                     </tr>
                     <tr th:each="ord : ${allOrdersList}">
-                        <td><a th:href="@{/thyme/order(orderId=${ord.id})}" th:text="${ord.id}"></a></td>
-                        <td><a th:href="@{/thyme/orders(customerId=${ord.customer.id})}" th:text="${ord.customer.id}"></a></td>
+                        <td><a th:href="@{/order(orderId=${ord.id})}" th:text="${ord.id}"></a></td>
+                        <td><a th:href="@{/orders(customerId=${ord.customerId})}" th:text="${ord.customerId}"></a></td>
                         <td th:text="${ord.date}"></td>
-                        <td th:text="${ord.items}" class="right"></td>
-                        <td th:text="${ord.totalString}" class="right"></td>
+                        <td th:text="${ord.getNumberOfItems}" class="right"></td>
+                        <td th:text="${ord.getTotalString}" class="right"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -58,7 +58,7 @@
 
                     <br><br>
 
-                    <form id="form2" class="form" action="#" th:action="@{/thyme/neworder}" method="get">
+                    <form id="form2" class="form" action="#" th:action="@{/neworder}" method="get">
                         <div class="form-control" >
                             <input type="hidden" name="customerId" th:value="${customerId}">
                             <input id="confirm-button" type="submit" value="New order">

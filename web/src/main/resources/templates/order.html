@@ -45,15 +45,15 @@
                 <td></td>
             </tr>
             <tr th:each="entry : ${order.orderEntries}">
-                <td th:text="${entry.item.id}"></td>
-                <td th:text="${entry.item.name}"></td>
-                <td th:text="${entry.item.priceString}" class="right"></td>
+                <td th:text="${entry.itemId}"></td>
+                <td th:text="${entry.getItemName}"></td>
+                <td th:text="${entry.getPriceAsString}" class="right"></td>
                 <td th:text="${entry.quantity}" class="right"></td>
                 <td class="adjust-quantity"><a
-                        th:href="@{/thyme/adjustorder(orderId=${order.id}, itemId=${entry.item.id}, quantity=-1)}">-</a>
+                        th:href="@{/adjustorder(orderId=${order.id}, itemId=${entry.itemId}, quantity=-1)}">-</a>
                 </td>
                 <td class="adjust-quantity"><a
-                        th:href="@{/thyme/adjustorder(orderId=${order.id}, itemId=${entry.item.id}, quantity=1)}">+</a>
+                        th:href="@{/adjustorder(orderId=${order.id}, itemId=${entry.itemId}, quantity=1)}">+</a>
                 </td>
             </tr>
             </tbody>
@@ -61,7 +61,7 @@
 
         <br><br>
 
-        <form id="form" class="form" action="#" th:action="@{/thyme/adjustorder}" method="get">
+        <form id="form" class="form" action="#" th:action="@{/adjustorder}" method="get">
             <div class="form-control">
 
                 <label for="item">Product ID (type to search)</label>

@@ -1,5 +1,6 @@
 package com.example.customers.controller;
 import com.example.customers.model.Customer;
+import com.example.customers.model.CustomerList;
 import com.example.customers.repository.CustomerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,8 @@ public class CustomerController {
     }
 
     @GetMapping("/")
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    public CustomerList getAllCustomers() {
+        return new CustomerList(customerRepository.findAll());
     }
 
     @GetMapping("/{id}")
@@ -30,17 +31,17 @@ public class CustomerController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<String> createCustomer(@RequestBody Customer customer) {
+    public String createCustomer(@RequestBody Customer customer) {
 
-        if (customer.getFirstName().isBlank() || customer.getLastName().isBlank()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid name");
+        if (customer.getFirstName().isBlank() || customer.getLastName().isBlank()) return "Invalid name";
 
-        if (customer.getSsn().trim().length() != 10) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid SSN");
+        if (customer.getSsn().trim().length() != 10) return "Invalid SSN";
 
-        if (customerRepository.findAll().stream().anyMatch(c -> c.getSsn().equals(customer.getSsn()))) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("SSN already in database");
+        if (customerRepository.findAll().stream().anyMatch(c -> c.getSsn().equals(customer.getSsn()))) return "SSN already in database";
 
         customerRepository.save(customer);
 
-        return ResponseEntity.ok("Customer added to database");
+        return "Customer added to database";
     }
 
 }

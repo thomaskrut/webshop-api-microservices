@@ -43,7 +43,7 @@
         </tr>
         <tr th:each="itm : ${allItemsList}">
             <td th:text="${itm.name}"></td>
-            <td th:text="${itm.price}"></td>
+            <td th:text="${itm.getPriceAsString}"></td>
         </tr>
         </tbody>
     </table>
