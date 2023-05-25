@@ -59,6 +59,21 @@ services:
       - orders-data:/var/lib/mysql
 
   # Java services
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080"
+    container_name: web-service
+    environment:
+      ITEMS_SERVICE_URL: http://items-service:8080/
+      CUSTOMERS_SERVICE_URL: http://customers-service:8080/
+      ORDERS_SERVICE_URL: http://orders-service:8080/
+    env_file:
+      - ./env/customers.env
+
   customers:
     build:
       context: ./customers

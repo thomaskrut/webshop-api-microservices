@@ -22,7 +22,6 @@ public class WebApplication {
         return builder.build();
     }
 
-
     public static void main(String[] args) {
         SpringApplication.run(WebApplication.class, args);
     }
