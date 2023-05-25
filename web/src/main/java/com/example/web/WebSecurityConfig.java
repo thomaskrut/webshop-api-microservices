@@ -25,7 +25,8 @@ public class WebSecurityConfig {
                                 "/addcustomer",
                                 "/adjustorder",
                                 "/registercustomer",
-                                "/registeritem"
+                                "/registeritem",
+                                "/neworder"
                         ).hasRole("ADMIN")
                         .requestMatchers("/**").hasRole("USER"))
 
