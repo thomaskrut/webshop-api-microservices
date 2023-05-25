@@ -109,7 +109,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/orders/1",
+					"raw": "http://localhost:8080/orders/52",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -117,7 +117,7 @@
 					"port": "8080",
 					"path": [
 						"orders",
-						"1"
+						"52"
 					]
 				}
 			},
@@ -130,7 +130,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"firstName\": \"Thomas\",\r\n    \"lastName\": \"Krut\",\r\n    \"ssn\": \"8205286622\"\r\n}",
+					"raw": "{\r\n    \"firstName\": \"Thomas\",\r\n    \"lastName\": \"Krut\",\r\n    \"ssn\": \"8205286631\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -158,7 +158,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Diskmaskin\",\r\n    \"price\": 5660.90\r\n}",
+					"raw": "{\r\n    \"name\": \"Bananskalare\",\r\n    \"price\": 9.90\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -189,7 +189,7 @@
 					"formdata": [
 						{
 							"key": "customerId",
-							"value": "1",
+							"value": "2",
 							"type": "text"
 						}
 					]
@@ -222,7 +222,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"itemId\": 1,\r\n    \"quantity\":3\r\n}",
+					"raw": "{\r\n    \"itemId\": 2,\r\n    \"quantity\":3\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -230,7 +230,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/orders/1",
+					"raw": "http://localhost:8080/orders/52",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -238,7 +238,164 @@
 					"port": "8080",
 					"path": [
 						"orders",
-						"1"
+						"52"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/web/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "user",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "ThePassword",
+							"type": "text"
+						},
+						{
+							"key": "_csrf",
+							"value": "IqY31ikj5V7K-r8-h9nwo6U2H3f2BbruX5sVpFOccMaosOnfE5APshkVhGnnyI5cs_TElpJSMk_ON4jDaKomxjWkSaKYgd--",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/web/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"web",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/web/logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "user",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "ThePassword",
+							"type": "text"
+						},
+						{
+							"key": "_csrf",
+							"value": "UFCNMn9nGtYYWwQnrkazzvLno30-9QxVyCpVHZUAKrErP77hZGO5BBlWLuY1amUXnGuHq5TfjkQKxTx48RlkefY3EoUSB4-A",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/web/logout",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"web",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/web/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/web/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"web",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/web/logout",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/web/logout",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"web",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/web/customers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/web/customers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"web",
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/web/addcustomer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/web/addcustomer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"web",
+						"addcustomer"
 					]
 				}
 			},
