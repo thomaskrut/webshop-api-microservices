@@ -28,7 +28,9 @@ public class WebSecurityConfig {
                                 "/registeritem",
                                 "/neworder"
                         ).hasRole("ADMIN")
+                        .requestMatchers("/", "/index", "/assets/**").permitAll()
                         .requestMatchers("/**").hasRole("USER"))
+
 
                 .formLogin(Customizer.withDefaults());
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,7 +60,13 @@ public class ThymeController {
     }
 
     @RequestMapping({"/index", "/", ""})
-    public String getIndex() {
+    public String getIndex(Model model, Principal principal) {
+        if (principal != null) {
+            model.addAttribute("currentRole", principal.getName());
+        } else {
+            model.addAttribute("currentRole", "ej inloggad");
+        }
+
         return "index.html";
     }
 

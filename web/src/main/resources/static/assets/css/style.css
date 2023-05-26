@@ -106,6 +106,12 @@ a.active {
     text-align: center;
 }
 
+h3 {
+    margin: 0;
+    font-size: medium;
+    text-align: center;
+}
+
 #form-header {
     padding: 30px 40px;
 }

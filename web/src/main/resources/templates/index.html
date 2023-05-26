@@ -34,6 +34,35 @@
         <div class="header" id="form-header">
             <h2>Välkommen!</h2>
         </div>
+        <br>
+        <div>
+            <h3>
+                Inloggad som: <span th:text="${currentRole}"></span>
+            </h3>
+        </div>
+        <br>
+        <div class="form">
+            <table class="table-style">
+                <tr>
+                    <td>
+                        <form class="form" action="/web/login">
+                            <div class="form-control">
+                                <input type="submit" value="Logga in">
+                            </div>
+                        </form>
+                    </td>
+                    <td>
+                        <form class="form" action="/web/logout">
+                            <div class="form-control">
+                                <input type="submit" value="Logga ut">
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+
+
+        </div>
 
 
     </div>
