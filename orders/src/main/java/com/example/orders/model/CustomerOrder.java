@@ -2,6 +2,9 @@ package com.example.orders.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +35,7 @@ public class CustomerOrder {
     @Cascade(CascadeType.ALL)
     private List<OrderEntry> orderEntries = new ArrayList<>();
 
+    @Positive(message = "Customer ID must be positive")
     private long customerId;
 
     public CustomerOrder(LocalDate date) {

@@ -5,6 +5,8 @@ import com.example.orders.repository.CustomerOrderRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
+@Validated
 public class OrderController {
 
     private final CustomerOrderRepository customerOrderRepository;
@@ -89,6 +92,14 @@ public class OrderController {
         currentOrder.addOrderEntry(new OrderEntry(req.getItemId(), req.getQuantity()));
         customerOrderRepository.save(currentOrder);
         return "Entry added to order " + orderId;
+
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public List<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+
+        return ex.getBindingResult().getAllErrors().stream().map(e -> "Error: " + e.getDefaultMessage()).toList();
 
     }
 

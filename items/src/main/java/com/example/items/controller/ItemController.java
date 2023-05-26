@@ -2,14 +2,18 @@ package com.example.items.controller;
 import com.example.items.model.Item;
 import com.example.items.model.ItemList;
 import com.example.items.repository.ItemRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@Validated
 public class ItemController {
 
 
@@ -31,7 +35,7 @@ public class ItemController {
     }
 
     @PostMapping("/")
-    public String createItem(@RequestBody Item item) {
+    public String createItem(@Valid @RequestBody Item item) {
 
         if (item.getName().isBlank()) return "Invalid product name";
 
@@ -39,6 +43,14 @@ public class ItemController {
 
         itemRepository.save(item);
         return "Product added";
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public List<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+
+        return ex.getBindingResult().getAllErrors().stream().map(e -> "Error: " + e.getDefaultMessage()).toList();
+
     }
 
 }
