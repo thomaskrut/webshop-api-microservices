@@ -59,19 +59,25 @@ public class ThymeController {
         return Objects.requireNonNullElseGet(orders, OrderList::new);
     }
 
+    private String getCurrentRole(Principal principal) {
+        if (principal != null) {
+            return principal.getName();
+        } else {
+            return "ej inloggad";
+        }
+    }
+
+
+
     @RequestMapping({"/index", "/", ""})
     public String getIndex(Model model, Principal principal) {
-        if (principal != null) {
-            model.addAttribute("currentRole", principal.getName());
-        } else {
-            model.addAttribute("currentRole", "ej inloggad");
-        }
+        model.addAttribute("currentRole", getCurrentRole(principal));
 
         return "index.html";
     }
 
     @RequestMapping({"/customers", "/addorder"})
-    public String getAllCustomers(Model model) {
+    public String getAllCustomers(Model model, Principal principal) {
 
         CustomerList customers = getAllCustomers();
         OrderList orders = getAllOrders();
@@ -80,6 +86,7 @@ public class ThymeController {
             c.setOrders(orders.getOrderList().stream().filter(o -> o.getCustomerId() == c.getId()).count());
         });
 
+        model.addAttribute("currentRole", getCurrentRole(principal));
         model.addAttribute("allCustomersList", customers.getCustomerList());
         model.addAttribute("firstNameTitle", "firstName");
         model.addAttribute("lastNameTitle", "lastName");
@@ -89,10 +96,11 @@ public class ThymeController {
     }
 
     @RequestMapping("/items")
-    public String getAllItems(Model model) {
+    public String getAllItems(Model model, Principal principal) {
 
         ItemList items = getAllItems();
 
+        model.addAttribute("currentRole", getCurrentRole(principal));
         model.addAttribute("allItemsList", items.getItemList());
         model.addAttribute("nameTitle", "name");
         model.addAttribute("priceTitle", "price");
@@ -106,7 +114,7 @@ public class ThymeController {
             @RequestParam(required = false, defaultValue = "-1") long customerId,
             @RequestParam(required = false, defaultValue = "id") String sortby,
             @RequestParam(required = false, defaultValue = "desc") String order,
-            Model model) {
+            Model model, Principal principal) {
 
         OrderList orders = getAllOrders();
         ItemList items = getAllItems();
@@ -140,6 +148,7 @@ public class ThymeController {
 
         String newOrder = (order.equals("asc")) ? "desc" : "asc";
 
+        model.addAttribute("currentRole", getCurrentRole(principal));
         model.addAttribute("customerId", customerId);
         model.addAttribute("sortby", sortby);
         model.addAttribute("newOrder", newOrder);
@@ -151,7 +160,7 @@ public class ThymeController {
 
 
     @RequestMapping("/order")
-    public String getOrder(@RequestParam long orderId, Model model) {
+    public String getOrder(@RequestParam long orderId, Model model, Principal principal) {
 
         OrderList orders = getAllOrders();
 
@@ -166,6 +175,7 @@ public class ThymeController {
 
         });
 
+        model.addAttribute("currentRole", getCurrentRole(principal));
         model.addAttribute("items", items.getItemList());
         model.addAttribute("order", order);
         model.addAttribute("orderTitle", "ORDER ID: " + orderId);
@@ -174,44 +184,49 @@ public class ThymeController {
 
 
     @RequestMapping("/confirmitem")
-    public String confirmItem(Model model, Item i, String message) {
+    public String confirmItem(Model model, Principal principal, Item i, String message) {
+        model.addAttribute("currentRole", getCurrentRole(principal));
         model.addAttribute("item", i);
         model.addAttribute("message", message);
         return "confirmitem.html";
     }
 
     @GetMapping("/addcustomer")
-    public String addCustomerForm() {
+    public String addCustomerForm(Model model, Principal principal) {
+        model.addAttribute("currentRole", getCurrentRole(principal));
         return "addcustomer.html";
     }
 
     @GetMapping("/registercustomer")
     public String addCustomer(@RequestParam String fname, @RequestParam String lname,
-                              @RequestParam String ssn, Model model) {
+                              @RequestParam String ssn, Model model, Principal principal) {
         Customer c = new Customer();
         c.setFirstName(fname);
         c.setLastName(lname);
         c.setSsn(ssn);
         restTemplate.postForObject(customersServiceUrl, c, String.class);
-        return getAllCustomers(model);
+        model.addAttribute("currentRole", getCurrentRole(principal));
+        return getAllCustomers(model, principal);
     }
 
 
     @GetMapping("/additem")
-    public String addItemForm(Model model) {
+    public String addItemForm(Model model, Principal principal) {
+        model.addAttribute("currentRole", getCurrentRole(principal));
         model.addAttribute("item", new Item());
         return "additem.html";
     }
 
     @GetMapping("/registeritem")
-    public String addItem(@RequestParam String name, @RequestParam Double price, Model model) {
+    public String addItem(@RequestParam String name, @RequestParam Double price, Model model, Principal principal) {
 
-        if (name.isBlank() || price < 0) return confirmItem(model, null, "Error: invalid data");
+        if (name.isBlank() || price < 0) return confirmItem(model, principal, null, "Error: invalid data");
         Item i = new Item();
         i.setName(name);
         i.setPrice(price);
         restTemplate.postForObject(itemsServiceUrl, i, String.class);
-        return confirmItem(model, i, "Item successfully added");
+        model.addAttribute("currentRole", getCurrentRole(principal));
+        return confirmItem(model, principal, i, "Item successfully added");
     }
     /*
      */
@@ -220,16 +235,16 @@ public class ThymeController {
     public String adjustOrder(@RequestParam long orderId,
                               @RequestParam int itemId,
                               @RequestParam int quantity,
-                              Model model) {
+                              Model model, Principal principal) {
 
         restTemplate.put(ordersServiceUrl + "/" + orderId, new NewOrderEntryRequest(itemId, quantity));
-
-        return getOrder(orderId, model);
+        model.addAttribute("currentRole", getCurrentRole(principal));
+        return getOrder(orderId, model, principal);
     }
 
 
     @GetMapping("/neworder")
-    public String newOrder(@RequestParam long customerId, Model model) {
+    public String newOrder(@RequestParam long customerId, Model model, Principal principal) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -241,7 +256,8 @@ public class ThymeController {
         CustomerOrder newOrder = restTemplate.postForObject(ordersServiceUrl, request, CustomerOrder.class);
 
         assert newOrder != null;
-        return getOrder(newOrder.getId(), model);
+        model.addAttribute("currentRole", getCurrentRole(principal));
+        return getOrder(newOrder.getId(), model, principal);
 
     }
 }

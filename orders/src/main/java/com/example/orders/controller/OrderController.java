@@ -45,7 +45,6 @@ public class OrderController {
         try {
             restTemplate.getForEntity(customersServiceUrl + customerId, Object.class);
         } catch (HttpClientErrorException e) {
-
             return null;
         }
 

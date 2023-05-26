@@ -15,13 +15,38 @@
 
 <nav class="navbar">
     <div class="navbar-center">
-        <a th:href="@{customers}" class="nav-link">Customers</a>
-        <a th:href="@{items}" class="nav-link">Items</a>
-        <a th:href="@{orders}" class="nav-link">Orders</a>
+        <th:block th:switch="${currentRole}">
+            <th:block th:case="'user'">
+                <a th:href="@{customers}" class="nav-link">Customers</a>
+                <a th:href="@{items}" class="nav-link">Items</a>
+                <a th:href="@{orders}" class="nav-link">Orders</a>
+            </th:block>
+            <th:block th:case="'admin'">
+                <a th:href="@{customers}" class="nav-link">Customers</a>
+                <a th:href="@{items}" class="nav-link">Items</a>
+                <a th:href="@{orders}" class="nav-link">Orders</a>
+            </th:block>
+            <th:block th:case="*">
+                <a class="no-access">Customers</a>
+                <a class="no-access">Items</a>
+                <a class="no-access">Orders</a>
+            </th:block>
+        </th:block>
+
         <a th:href="@{index}" class="nav-link"><h2 class="nav-title">Bluffköp AB</h2></a>
-        <a th:href="@{addcustomer}" class="nav-link">Add Customer</a>
-        <a th:href="@{additem}" class="nav-link">Add Item</a>
-        <a th:href="@{addorder}" class="nav-link">Add Order</a>
+
+        <th:block th:switch="${currentRole}">
+            <th:block th:case="'admin'">
+                <a th:href="@{addcustomer}" class="nav-link">Add Customer</a>
+                <a th:href="@{additem}" class="nav-link">Add Item</a>
+                <a th:href="@{addorder}" class="nav-link">Add Order</a>
+            </th:block>
+            <th:block th:case="*">
+                <a class="no-access">Add Customer</a>
+                <a class="no-access">Add Item</a>
+                <a class="no-access">Add Order</a>
+            </th:block>
+        </th:block>
     </div>
 </nav>
 

@@ -66,6 +66,17 @@ a.active {
     color: var(--primaryColor);
 }
 
+.no-access {
+    color: var(--primaryColor);
+    text-decoration: none;
+}
+
+.no-access:hover {
+    color: var(--primaryColor);
+    text-decoration: none;
+    cursor: default;
+}
+
 /* --------------- Form pages ---------------- */
 
 #form-container {
