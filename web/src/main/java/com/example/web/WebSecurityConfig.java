@@ -32,7 +32,13 @@ public class WebSecurityConfig {
                         .requestMatchers("/**").hasRole("USER"))
 
 
-                .formLogin(Customizer.withDefaults());
+                .formLogin(Customizer.withDefaults())
+                .logout((logout) ->
+                        logout.deleteCookies("remove")
+                                .invalidateHttpSession(false)
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/index")
+                );
 
         return http.build();
     }

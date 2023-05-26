@@ -61,40 +61,27 @@
         </div>
         <br>
         <div>
-            <h3>
+            <h3 th:if="${currentRole} != 'ej inloggad'">
                 Inloggad som: <span th:text="${currentRole}"></span>
             </h3>
         </div>
         <br>
-        <div class="form">
-            <table class="table-style">
-                <tr>
-                    <td th:if="${currentRole} == 'ej inloggad'">
-                        <form class="form" action="/web/login">
-                            <div class="form-control">
-                                <input type="submit" value="Logga in" id="login">
-                            </div>
-                        </form>
-                    </td>
-                    <td th:if="${currentRole} != 'ej inloggad'">
-                        <form class="form" action="/web/login">
-                            <div class="form-control">
-                                <input type="submit" value="Byt användare" id="login">
-                            </div>
-                        </form>
-                    </td>
-                    <td th:if="${currentRole} != 'ej inloggad'">
-                        <form class="form" action="/web/logout">
-                            <div class="form-control">
-                                <input type="submit" value="Logga ut" id="logout">
-                            </div>
-                        </form>
-                    </td>
-                </tr>
-            </table>
 
+        <form th:if="${currentRole} != 'ej inloggad'" class="form" action="/web/logout" method="post">
+            <input name="_csrf" type="hidden" th:value="${_csrf.token}" />
+            <input id="login" type="submit" value="Logga ut">
+        </form>
 
-        </div>
+        <form th:if="${currentRole} == 'ej inloggad'" class="form" action="/web/login" method="post">
+            <div class="form-control">
+                <label for="username">Användarnamn:</label><br>
+                <input type="text" id="username" name="username"><br>
+                <label for="password">Lösenord:</label><br>
+                <input type="password" id="password" name="password"><br>
+                <input name="_csrf" type="hidden" th:value="${_csrf.token}" />
+                <input id="logout" type="submit" value="Logga in">
+            </div>
+        </form>
 
 
     </div>
