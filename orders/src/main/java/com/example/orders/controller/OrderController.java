@@ -10,7 +10,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 public class OrderController {
@@ -40,30 +39,36 @@ public class OrderController {
     }
 
     @PostMapping("/")
+    @ResponseStatus(HttpStatus.CREATED)
     public CustomerOrder createOrder(@RequestParam long customerId) {
-
         try {
-            restTemplate.getForEntity(customersServiceUrl + customerId, Object.class);
-        } catch (HttpClientErrorException e) {
-            return null;
+           restTemplate.getForEntity(customersServiceUrl + customerId, Object.class);
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new ObjectNotFoundException("Customer with ID " + customerId + " does not exist");
         }
-
+        catch (HttpClientErrorException e) {
+            throw new HttpClientErrorException(e.getStatusCode());
+        }
         CustomerOrder newCustomerOrder = new CustomerOrder(customerId);
         customerOrderRepository.save(newCustomerOrder);
         return newCustomerOrder;
+
     }
 
     @PostMapping("/{orderId}")
+    @ResponseStatus(HttpStatus.CREATED)
     public String addOrderEntry(@PathVariable long orderId, @RequestBody NewOrderEntryRequest req) {
 
         if (customerOrderRepository.findById(orderId).isEmpty()) {
             return "Order not found";
         }
-
         try {
             restTemplate.getForEntity(itemsServiceUrl + req.getItemId(), Object.class);
-        } catch (HttpClientErrorException e) {
-            return "Item not found";
+        }  catch (HttpClientErrorException.NotFound e) {
+            throw new ObjectNotFoundException("Item with ID " + req.getItemId() + " does not exist");
+        }
+        catch (HttpClientErrorException e) {
+            throw new HttpClientErrorException(e.getStatusCode());
         }
 
         CustomerOrder currentOrder = customerOrderRepository.findById(orderId).get();
@@ -78,18 +83,19 @@ public class OrderController {
         if (customerOrderRepository.findById(orderId).isEmpty()) {
             return "Order not found";
         }
-
         try {
             restTemplate.getForEntity(itemsServiceUrl + req.getItemId(), Object.class);
-        } catch (HttpClientErrorException e) {
-            return "Item not found";
         }
-
+        catch (HttpClientErrorException.NotFound e) {
+            throw new ObjectNotFoundException("Item with ID " + req.getItemId() + " does not exist");
+            }
+        catch (HttpClientErrorException e) {
+            throw new HttpClientErrorException(e.getStatusCode());
+        }
         CustomerOrder currentOrder = customerOrderRepository.findById(orderId).get();
         currentOrder.addOrderEntry(new OrderEntry(req.getItemId(), req.getQuantity()));
         customerOrderRepository.save(currentOrder);
         return "Entry added to order " + orderId;
-
     }
 
 }
