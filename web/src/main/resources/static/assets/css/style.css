@@ -155,7 +155,7 @@ h3 {
     border-color: #777;
 }
 
-#confirm-button {
+#confirm-button, #login, #logout {
     font-weight: bold;
     width: 100%;
     margin-bottom: 2rem;
@@ -172,7 +172,7 @@ h3 {
 }
 
 
-#confirm-button:hover {
+#confirm-button:hover, #login:hover, #logout:hover {
     background: transparent;
     color: var(--primaryColor);
 }

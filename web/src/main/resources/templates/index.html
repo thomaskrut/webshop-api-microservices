@@ -69,17 +69,24 @@
         <div class="form">
             <table class="table-style">
                 <tr>
-                    <td>
+                    <td th:if="${currentRole} == 'ej inloggad'">
                         <form class="form" action="/web/login">
                             <div class="form-control">
-                                <input type="submit" value="Logga in">
+                                <input type="submit" value="Logga in" id="login">
                             </div>
                         </form>
                     </td>
-                    <td>
+                    <td th:if="${currentRole} != 'ej inloggad'">
+                        <form class="form" action="/web/login">
+                            <div class="form-control">
+                                <input type="submit" value="Byt användare" id="login">
+                            </div>
+                        </form>
+                    </td>
+                    <td th:if="${currentRole} != 'ej inloggad'">
                         <form class="form" action="/web/logout">
                             <div class="form-control">
-                                <input type="submit" value="Logga ut">
+                                <input type="submit" value="Logga ut" id="logout">
                             </div>
                         </form>
                     </td>
