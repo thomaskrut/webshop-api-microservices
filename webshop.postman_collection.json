@@ -343,6 +343,25 @@
 			"response": []
 		},
 		{
+			"name": "localhost:8080/web/login",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/web/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"web",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "localhost:8080/web/logout",
 			"request": {
 				"method": "GET",
