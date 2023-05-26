@@ -2,13 +2,16 @@ package com.example.customers.controller;
 import com.example.customers.model.Customer;
 import com.example.customers.model.CustomerList;
 import com.example.customers.repository.CustomerRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Validated
 public class CustomerController {
 
 
@@ -31,16 +34,10 @@ public class CustomerController {
     }
 
     @PostMapping("/")
-    public String createCustomer(@RequestBody Customer customer) {
-
-        if (customer.getFirstName().isBlank() || customer.getLastName().isBlank()) return "Invalid name";
-
-        if (customer.getSsn().trim().length() != 10) return "Invalid SSN";
+    public String createCustomer(@Valid @RequestBody Customer customer) {
 
         if (customerRepository.findAll().stream().anyMatch(c -> c.getSsn().equals(customer.getSsn()))) return "SSN already in database";
-
         customerRepository.save(customer);
-
         return "Customer added to database";
     }
 
