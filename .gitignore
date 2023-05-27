@@ -1,3 +1,4 @@
+uiDesigner.xml
 .gradle
 **/build/
 !src/**/build/

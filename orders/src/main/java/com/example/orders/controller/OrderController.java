@@ -2,13 +2,21 @@ package com.example.orders.controller;
 
 import com.example.orders.model.*;
 import com.example.orders.repository.CustomerOrderRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.management.ServiceNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -16,6 +24,8 @@ public class OrderController {
 
     private final CustomerOrderRepository customerOrderRepository;
     private final RestTemplate restTemplate;
+
+
 
     @Value("${customers-service.url}")
     private String customersServiceUrl;
@@ -40,6 +50,7 @@ public class OrderController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
+    @Retryable(exclude = HttpClientErrorException.NotFound.class, maxAttempts=5, backoff = @Backoff(delay = 2000, multiplier = 2))
     public CustomerOrder createOrder(@RequestParam long customerId) {
         try {
            restTemplate.getForEntity(customersServiceUrl + customerId, Object.class);
@@ -49,10 +60,17 @@ public class OrderController {
         catch (HttpClientErrorException e) {
             throw new HttpClientErrorException(e.getStatusCode());
         }
+
         CustomerOrder newCustomerOrder = new CustomerOrder(customerId);
         customerOrderRepository.save(newCustomerOrder);
         return newCustomerOrder;
+    }
 
+    @Recover
+    public void connectionException(Exception e) throws Exception {
+        // Insert backup method
+        System.out.println("Retry failure");
+        throw e;
     }
 
     @PostMapping("/{orderId}")

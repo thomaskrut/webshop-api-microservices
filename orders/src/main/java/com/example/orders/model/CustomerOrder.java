@@ -1,5 +1,6 @@
 package com.example.orders.model;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,8 +18,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-
-
 public class CustomerOrder {
 
     @Id
@@ -33,6 +32,7 @@ public class CustomerOrder {
     private List<OrderEntry> orderEntries = new ArrayList<>();
 
     private long customerId;
+
 
     public CustomerOrder(LocalDate date) {
         this.date = date;
