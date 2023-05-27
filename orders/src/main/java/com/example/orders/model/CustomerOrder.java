@@ -1,5 +1,6 @@
 package com.example.orders.model;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,8 +21,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-
-
 public class CustomerOrder {
 
     @Id
@@ -37,6 +36,7 @@ public class CustomerOrder {
 
     @Positive(message = "Customer ID must be positive")
     private long customerId;
+
 
     public CustomerOrder(LocalDate date) {
         this.date = date;
