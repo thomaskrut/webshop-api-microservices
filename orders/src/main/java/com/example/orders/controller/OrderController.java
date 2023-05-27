@@ -50,23 +50,23 @@ public class OrderController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    @Retryable(noRetryFor = HttpClientErrorException.class, maxAttempts=4, backoff = @Backoff(delay = 500, multiplier = 2))
+    @Retryable(noRetryFor = ObjectNotFoundException.class, maxAttempts=4, backoff = @Backoff(delay = 500, multiplier = 2))
     public CustomerOrder createOrder(@RequestParam long customerId) {
         try {
            restTemplate.getForEntity(customersServiceUrl + customerId, Object.class);
         } catch (HttpClientErrorException.NotFound e) {
             throw new ObjectNotFoundException("Customer with ID " + customerId + " does not exist");
+        } catch (Exception e) {
+            throw e;
         }
-        catch (HttpClientErrorException e) {
-            throw new HttpClientErrorException(e.getStatusCode());
-        }
+
         CustomerOrder newCustomerOrder = new CustomerOrder(customerId);
         customerOrderRepository.save(newCustomerOrder);
         return newCustomerOrder;
     }
 
     @Recover
-    public void connectionException(Exception e) throws Exception {
+    public CustomerOrder connectionException(Exception e) throws Exception {
        // Recovery method
         throw e;
     }
