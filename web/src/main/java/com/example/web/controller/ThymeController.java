@@ -218,14 +218,17 @@ public class ThymeController {
     }
 
     @GetMapping("/registeritem")
-    public String addItem(@RequestParam String name, @RequestParam Double price, Model model, Principal principal) {
+    public String addItem(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "0") Double price, Model model, Principal principal) {
 
-        if (name.isBlank() || price < 0) return confirmItem(model, principal, null, "Error: invalid data");
+        //if (name.isBlank() || price < 0) return confirmItem(model, principal, null, "Error: invalid data");
         Item i = new Item();
         i.setName(name);
         i.setPrice(price);
-        restTemplate.postForObject(itemsServiceUrl, i, String.class);
-        model.addAttribute("currentRole", getCurrentRole(principal));
+        try {
+            restTemplate.postForObject(itemsServiceUrl, i, String.class);
+        } catch (Exception e) {
+            return confirmItem(model, principal, null, e.getMessage());
+        }
         return confirmItem(model, principal, i, "Item successfully added");
     }
     /*
