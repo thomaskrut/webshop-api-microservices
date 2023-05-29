@@ -18,10 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.security.Principal;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -164,9 +161,16 @@ public class ThymeController {
 
         OrderList orders = getAllOrders();
 
-        CustomerOrder order = orders.getOrderList().stream().filter(o -> o.getId() == orderId).findFirst().orElse(new CustomerOrder());
-
+        CustomerOrder order = orders.getOrderList().stream().filter(o -> o.getId() == orderId).findFirst().orElse(null);
         ItemList items = getAllItems();
+
+        if (order == null) {
+            model.addAttribute("currentRole", getCurrentRole(principal));
+            model.addAttribute("items", items.getItemList());
+            model.addAttribute("order", new CustomerOrder());
+            model.addAttribute("orderTitle", "Error getting order");
+            return "order.html";
+        }
 
         order.getOrderEntries().forEach(oe -> {
             Item item = items.getItemList().stream().filter(i -> i.getId() == oe.getItemId()).findFirst().orElse(new Item());
@@ -204,11 +208,21 @@ public class ThymeController {
         c.setFirstName(fname);
         c.setLastName(lname);
         c.setSsn(ssn);
-        restTemplate.postForObject(customersServiceUrl, c, String.class);
-        model.addAttribute("currentRole", getCurrentRole(principal));
-        return getAllCustomers(model, principal);
-    }
 
+        try {
+            String response = restTemplate.postForObject(customersServiceUrl, c, String.class);
+            model.addAttribute("currentRole", getCurrentRole(principal));
+            model.addAttribute("customer", c);
+            model.addAttribute("message", response);
+            return "confirmcustomer.html";
+        } catch (Exception e) {
+            model.addAttribute("currentRole", getCurrentRole(principal));
+            model.addAttribute("customer", new Customer());
+            model.addAttribute("message", e.getMessage().substring(e.getMessage().indexOf(":") + 3, e.getMessage().length() - 3));
+            return "confirmcustomer.html";
+        }
+
+    }
 
     @GetMapping("/additem")
     public String addItemForm(Model model, Principal principal) {
@@ -220,19 +234,17 @@ public class ThymeController {
     @GetMapping("/registeritem")
     public String addItem(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "0") Double price, Model model, Principal principal) {
 
-        //if (name.isBlank() || price < 0) return confirmItem(model, principal, null, "Error: invalid data");
         Item i = new Item();
         i.setName(name);
         i.setPrice(price);
         try {
-            restTemplate.postForObject(itemsServiceUrl, i, String.class);
+            String response = restTemplate.postForObject(itemsServiceUrl, i, String.class);
+            return confirmItem(model, principal, i, response);
         } catch (Exception e) {
-            return confirmItem(model, principal, null, e.getMessage());
+            return confirmItem(model, principal, null, e.getMessage().substring(e.getMessage().indexOf(":") + 3, e.getMessage().length() - 3));
         }
-        return confirmItem(model, principal, i, "Item successfully added");
+
     }
-    /*
-     */
 
     @GetMapping("/adjustorder")
     public String adjustOrder(@RequestParam long orderId,
@@ -256,11 +268,13 @@ public class ThymeController {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
-        CustomerOrder newOrder = restTemplate.postForObject(ordersServiceUrl, request, CustomerOrder.class);
 
-        assert newOrder != null;
-        model.addAttribute("currentRole", getCurrentRole(principal));
-        return getOrder(newOrder.getId(), model, principal);
-
+        try {
+            CustomerOrder newOrder = restTemplate.postForObject(ordersServiceUrl, request, CustomerOrder.class);
+            assert newOrder != null;
+            return getOrder(newOrder.getId(), model, principal);
+        } catch (Exception e) {
+            return getOrder(-1, model, principal);
+        }
     }
 }

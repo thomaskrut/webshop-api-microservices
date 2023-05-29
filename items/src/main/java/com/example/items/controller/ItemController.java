@@ -47,9 +47,16 @@ public class ItemController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public List<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public String handleValidationExceptions(MethodArgumentNotValidException ex) {
 
-        return ex.getBindingResult().getAllErrors().stream().map(e -> "Error: " + e.getDefaultMessage()).toList();
+        StringBuilder result = new StringBuilder();
+
+        ex.getBindingResult().getAllErrors().forEach(e -> {
+            result.append(e.getDefaultMessage());
+            result.append(", ");
+        });
+
+        return result.toString();
 
     }
 

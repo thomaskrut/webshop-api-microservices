@@ -58,6 +58,8 @@ public class OrderController {
            restTemplate.getForEntity(customersServiceUrl + customerId, Object.class);
         } catch (HttpClientErrorException.NotFound e) {
             throw new ObjectNotFoundException("Customer with ID " + customerId + " does not exist");
+
+        //TODO Ta bort?
         } catch (Exception e) {
             throw e;
         }

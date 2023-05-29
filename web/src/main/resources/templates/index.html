@@ -57,29 +57,29 @@
 
 
         <div class="header" id="form-header">
-            <h2>Välkommen!</h2>
+            <h2>Welcome!</h2>
         </div>
         <br>
         <div>
             <h3 th:if="${currentRole} != 'ej inloggad'">
-                Inloggad som: <span th:text="${currentRole}"></span>
+                Logged in as: <span th:text="${currentRole}"></span>
             </h3>
         </div>
         <br>
 
         <form th:if="${currentRole} != 'ej inloggad'" class="form" action="/web/logout" method="post">
             <input name="_csrf" type="hidden" th:value="${_csrf.token}" />
-            <input id="login" type="submit" value="Logga ut">
+            <input id="login" type="submit" value="Log out">
         </form>
 
         <form th:if="${currentRole} == 'ej inloggad'" class="form" action="/web/login" method="post">
             <div class="form-control">
-                <label for="username">Användarnamn:</label><br>
+                <label for="username">Username:</label><br>
                 <input type="text" id="username" name="username"><br>
-                <label for="password">Lösenord:</label><br>
+                <label for="password">Password:</label><br>
                 <input type="password" id="password" name="password"><br>
                 <input name="_csrf" type="hidden" th:value="${_csrf.token}" />
-                <input id="logout" type="submit" value="Logga in">
+                <input id="logout" type="submit" value="Log in">
             </div>
         </form>
 
