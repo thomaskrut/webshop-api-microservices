@@ -4,7 +4,36 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="632443e6-f9cf-4a13-9f2f-ce113dd73af1" name="Changes" comment="" />
+    <list default="true" id="632443e6-f9cf-4a13-9f2f-ce113dd73af1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__com_fasterxml_jackson_module_jackson_module_parameter_names_2_15_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__com_sun_istack_istack_commons_runtime_4_1_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__io_swagger_core_v3_swagger_annotations_jakarta_2_2_9.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__io_swagger_core_v3_swagger_core_jakarta_2_2_9.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_antlr_antlr4_runtime_4_10_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_apache_tomcat_embed_tomcat_embed_core_10_1_8.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_apiguardian_apiguardian_api_1_1_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_attoparser_attoparser_2_0_6_RELEASE.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_junit_platform_junit_platform_commons_1_9_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_mockito_mockito_core_5_3_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_slf4j_slf4j_api_2_0_7.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_springdoc_springdoc_openapi_starter_common_2_1_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_springframework_boot_spring_boot_autoconfigure_3_1_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_springframework_boot_spring_boot_test_3_1_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_springframework_data_spring_data_jpa_3_1_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_springframework_retry_spring_retry_2_0_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_springframework_spring_core_6_0_9.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__org_springframework_spring_jdbc_6_0_9.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules/customers/webshop-api-microservices.customers.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules/customers/webshop-api-microservices.customers.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules/customers/webshop-api-microservices.customers.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules/customers/webshop-api-microservices.customers.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules/items/webshop-api-microservices.items.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules/items/webshop-api-microservices.items.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules/items/webshop-api-microservices.items.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules/items/webshop-api-microservices.items.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules/orders/webshop-api-microservices.orders.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules/orders/webshop-api-microservices.orders.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules/orders/webshop-api-microservices.orders.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules/orders/webshop-api-microservices.orders.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules/web/webshop-api-microservices.web.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules/web/webshop-api-microservices.web.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules/web/webshop-api-microservices.web.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules/web/webshop-api-microservices.web.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/orders/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/orders/controller/OrderController.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,10 +44,14 @@
       <ProjectState />
     </projectState>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2PvrmAYoo5poDhcke6JC6XoI1zu" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -28,7 +61,8 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/thoma/IdeaProjects/src/webshop-api-microservices"
+    "last_opened_file_path": "C:/Users/thoma/IdeaProjects/src/webshop-api-microservices",
+    "spring.configuration.checksum": "8069d1d916faa3564757adfa6398b160"
   }
 }]]></component>
   <component name="RunManager">
@@ -49,10 +83,22 @@
       <option name="presentableId" value="Default" />
       <updated>1684348554755</updated>
       <workItem from="1684348556174" duration="195000" />
+      <workItem from="1685302830384" duration="7000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

@@ -1,5 +1,6 @@
 uiDesigner.xml
 .gradle
+.idea
 **/build/
 !src/**/build/
 
