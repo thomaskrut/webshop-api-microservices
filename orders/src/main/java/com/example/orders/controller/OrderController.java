@@ -3,22 +3,19 @@ package com.example.orders.controller;
 import com.example.orders.model.*;
 import com.example.orders.repository.CustomerOrderRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.management.ServiceNotFoundException;
-import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Validated
@@ -26,7 +23,6 @@ public class OrderController {
 
     private final CustomerOrderRepository customerOrderRepository;
     private final RestTemplate restTemplate;
-
 
 
     @Value("${customers-service.url}")
@@ -52,16 +48,12 @@ public class OrderController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    @Retryable(noRetryFor = ObjectNotFoundException.class, maxAttempts=4, backoff = @Backoff(delay = 500, multiplier = 2))
+    @Retryable(noRetryFor = ObjectNotFoundException.class, maxAttempts = 4, backoff = @Backoff(delay = 500, multiplier = 2))
     public CustomerOrder createOrder(@RequestParam long customerId) {
         try {
-           restTemplate.getForEntity(customersServiceUrl + customerId, Object.class);
+            restTemplate.getForEntity(customersServiceUrl + customerId, Object.class);
         } catch (HttpClientErrorException.NotFound e) {
             throw new ObjectNotFoundException("Customer with ID " + customerId + " does not exist");
-
-        //TODO Ta bort?
-        } catch (Exception e) {
-            throw e;
         }
 
         CustomerOrder newCustomerOrder = new CustomerOrder(customerId);
@@ -70,47 +62,46 @@ public class OrderController {
     }
 
     @Recover
-    public CustomerOrder connectionException(Exception e) throws Exception {
+    public CustomerOrder createOrderRecovery(Exception e) throws Exception {
         throw e;
     }
 
 
     @PostMapping("/{orderId}")
     @ResponseStatus(HttpStatus.CREATED)
+    @Retryable(noRetryFor = ObjectNotFoundException.class, maxAttempts = 4, backoff = @Backoff(delay = 500, multiplier = 2))
     public String addOrderEntry(@PathVariable long orderId, @RequestBody NewOrderEntryRequest req) {
 
-        if (customerOrderRepository.findById(orderId).isEmpty()) {
-            return "Order not found";
-        }
+        orderExists(orderId).orElseThrow(() -> new ObjectNotFoundException("Order with ID " + orderId + " does not exist"));
+
         try {
             restTemplate.getForEntity(itemsServiceUrl + req.getItemId(), Object.class);
-        }  catch (HttpClientErrorException.NotFound e) {
+        } catch (HttpClientErrorException.NotFound e) {
             throw new ObjectNotFoundException("Item with ID " + req.getItemId() + " does not exist");
-        }
-        catch (HttpClientErrorException e) {
-            throw new HttpClientErrorException(e.getStatusCode());
         }
 
         CustomerOrder currentOrder = customerOrderRepository.findById(orderId).get();
         currentOrder.addOrderEntry(new OrderEntry(req.getItemId(), req.getQuantity()));
         customerOrderRepository.save(currentOrder);
         return "Entry added to order " + orderId;
+    }
+
+    @Recover
+    public String addOrderEntryRecovery(Exception e) throws Exception {
+        throw e;
     }
 
 
     @PutMapping("/{orderId}")
+    @ResponseStatus(HttpStatus.CREATED)
     public String adjustOrderEntry(@PathVariable long orderId, @RequestBody NewOrderEntryRequest req) {
-        if (customerOrderRepository.findById(orderId).isEmpty()) {
-            return "Order not found";
-        }
+
+        orderExists(orderId).orElseThrow(() -> new ObjectNotFoundException("Order with ID " + orderId + " does not exist"));
+
         try {
             restTemplate.getForEntity(itemsServiceUrl + req.getItemId(), Object.class);
-        }
-        catch (HttpClientErrorException.NotFound e) {
+        } catch (HttpClientErrorException.NotFound e) {
             throw new ObjectNotFoundException("Item with ID " + req.getItemId() + " does not exist");
-            }
-        catch (HttpClientErrorException e) {
-            throw new HttpClientErrorException(e.getStatusCode());
         }
         CustomerOrder currentOrder = customerOrderRepository.findById(orderId).get();
         currentOrder.addOrderEntry(new OrderEntry(req.getItemId(), req.getQuantity()));
@@ -118,12 +109,17 @@ public class OrderController {
         return "Entry added to order " + orderId;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public List<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-
-        return ex.getBindingResult().getAllErrors().stream().map(e -> "Error: " + e.getDefaultMessage()).toList();
-
+    @ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
+    @ExceptionHandler(ResourceAccessException.class)
+    public String handleTimeoutException(ResourceAccessException ex) {
+        return "Service unavailable";
     }
+
+    private Optional<CustomerOrder> orderExists(long orderId) {
+        return customerOrderRepository.findById(orderId);
+    }
+
+
+
 
 }

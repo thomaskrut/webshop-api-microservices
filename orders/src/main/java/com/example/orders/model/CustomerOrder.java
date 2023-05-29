@@ -34,7 +34,6 @@ public class CustomerOrder {
     @Cascade(CascadeType.ALL)
     private List<OrderEntry> orderEntries = new ArrayList<>();
 
-    @Positive(message = "Customer ID must be positive")
     private long customerId;
 
 
