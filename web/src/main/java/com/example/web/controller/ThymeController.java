@@ -65,7 +65,6 @@ public class ThymeController {
     }
 
 
-
     @RequestMapping({"/index", "/", ""})
     public String getIndex(Model model, Principal principal) {
         model.addAttribute("currentRole", getCurrentRole(principal));
@@ -208,20 +207,20 @@ public class ThymeController {
         c.setFirstName(fname);
         c.setLastName(lname);
         c.setSsn(ssn);
-
         try {
             String response = restTemplate.postForObject(customersServiceUrl, c, String.class);
-            model.addAttribute("currentRole", getCurrentRole(principal));
-            model.addAttribute("customer", c);
-            model.addAttribute("message", response);
-            return "confirmcustomer.html";
+            return confirmCustomer(model, principal, c, response);
         } catch (Exception e) {
-            model.addAttribute("currentRole", getCurrentRole(principal));
-            model.addAttribute("customer", new Customer());
-            model.addAttribute("message", e.getMessage().substring(e.getMessage().indexOf(":") + 3, e.getMessage().length() - 3));
-            return "confirmcustomer.html";
+            return confirmCustomer(model, principal, null, e.getMessage().substring(e.getMessage().indexOf(":") + 3, e.getMessage().length() - 3));
         }
+    }
 
+    @GetMapping("/confirmcustomer")
+    public String confirmCustomer(Model model, Principal principal, Customer c, String message) {
+        model.addAttribute("currentRole", getCurrentRole(principal));
+        model.addAttribute("customer", c);
+        model.addAttribute("message", message);
+        return "confirmcustomer.html";
     }
 
     @GetMapping("/additem")
@@ -237,6 +236,7 @@ public class ThymeController {
         Item i = new Item();
         i.setName(name);
         i.setPrice(price);
+
         try {
             String response = restTemplate.postForObject(itemsServiceUrl, i, String.class);
             return confirmItem(model, principal, i, response);

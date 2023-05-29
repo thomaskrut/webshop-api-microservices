@@ -60,14 +60,14 @@
         <h2 th:text="${message}"></h2>
       </div>
       <div class="form-control" >
-        <table class="table-style">
+        <table th:if="${item} != null" class="table-style">
           <tbody>
           <tr class="table-header">
 
             <td>Item Name</td>
             <td>Price</td>
           </tr>
-          <tr th:if="${item} != null">
+          <tr>
 
             <td th:text="${item.name}"></td>
             <td th:text="${item.price}"></td>

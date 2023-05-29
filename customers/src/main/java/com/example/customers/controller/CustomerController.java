@@ -44,7 +44,7 @@ public class CustomerController {
     public String createCustomer(@Valid @RequestBody Customer customer) {
 
         if (customerRepository.findAll().stream().anyMatch(c -> c.getSsn().equals(customer.getSsn())))
-            return "SSN already in database";
+            throw new IllegalArgumentException("Customer with this SSN already exists");
         customerRepository.save(customer);
         return "Customer added to database";
     }
@@ -61,6 +61,14 @@ public class CustomerController {
         });
 
         return result.toString();
+
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleIllegalArgumentExceptions(IllegalArgumentException ex) {
+
+        return ex.getMessage();
 
     }
 

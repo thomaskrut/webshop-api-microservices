@@ -23,8 +23,7 @@ public class Item {
     @Size(min = 2, max = 20, message = "Item name must be between 2 and 20 characters")
     private String name;
 
-    @Min(value = 0, message = "Price must be positive")
-    @Max(value = 999999, message = "Price must be less than 999999")
+    @Positive(message = "Item price must be positive")
     private double price;
 
     public Item(String name, double price) {
