@@ -20,7 +20,7 @@ public class OrdersApplication {
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        builder.setConnectTimeout(Duration.ofSeconds(3));
+        //builder.setConnectTimeout(Duration.ofSeconds(3));
         return builder.build();
     }
 

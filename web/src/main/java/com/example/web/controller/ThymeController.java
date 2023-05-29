@@ -64,7 +64,6 @@ public class ThymeController {
         }
     }
 
-
     @RequestMapping({"/index", "/", ""})
     public String getIndex(Model model, Principal principal) {
         model.addAttribute("currentRole", getCurrentRole(principal));
@@ -125,7 +124,12 @@ public class ThymeController {
 
         if (customerId > 0) {
             orders.setOrderList(orders.getOrderList().stream().filter(o -> o.getCustomerId() == customerId).collect(Collectors.toList()));
-            model.addAttribute("orderTitle", "ORDERS FOR CUSTOMER ID: " + customerId);
+            if (orders.getOrderList().isEmpty()) {
+                model.addAttribute("orderTitle", "No orders found");
+            } else {
+                model.addAttribute("orderTitle", "ORDERS FOR CUSTOMER ID: " + customerId);
+            }
+
         } else {
             model.addAttribute("orderTitle", "ALL ORDERS");
         }
@@ -156,7 +160,8 @@ public class ThymeController {
 
 
     @RequestMapping("/order")
-    public String getOrder(@RequestParam long orderId, Model model, Principal principal) {
+    public String getOrder(@RequestParam long orderId, String message, Model model, Principal principal) {
+
 
         OrderList orders = getAllOrders();
 
@@ -167,9 +172,11 @@ public class ThymeController {
             model.addAttribute("currentRole", getCurrentRole(principal));
             model.addAttribute("items", items.getItemList());
             model.addAttribute("order", new CustomerOrder());
-            model.addAttribute("orderTitle", "Error getting order");
+            model.addAttribute("orderTitle", "Order not found");
             return "order.html";
         }
+
+        if (message == null) message = "ORDER: " + orderId;
 
         order.getOrderEntries().forEach(oe -> {
             Item item = items.getItemList().stream().filter(i -> i.getId() == oe.getItemId()).findFirst().orElse(new Item());
@@ -181,7 +188,7 @@ public class ThymeController {
         model.addAttribute("currentRole", getCurrentRole(principal));
         model.addAttribute("items", items.getItemList());
         model.addAttribute("order", order);
-        model.addAttribute("orderTitle", "ORDER ID: " + orderId);
+        model.addAttribute("orderTitle", message);
         return "order.html";
     }
 
@@ -252,9 +259,16 @@ public class ThymeController {
                               @RequestParam int quantity,
                               Model model, Principal principal) {
 
-        restTemplate.put(ordersServiceUrl + "/" + orderId, new NewOrderEntryRequest(itemId, quantity));
-        model.addAttribute("currentRole", getCurrentRole(principal));
-        return getOrder(orderId, model, principal);
+
+        try {
+            restTemplate.put(ordersServiceUrl + "/" + orderId, new NewOrderEntryRequest(itemId, quantity));
+            return getOrder(orderId, null, model, principal);
+        } catch (Exception e) {
+            return getOrder(orderId, e.getMessage().substring(e.getMessage().indexOf("message") + 10, e.getMessage().indexOf("path") - 3), model, principal);
+        }
+
+
+
     }
 
 
@@ -272,9 +286,9 @@ public class ThymeController {
         try {
             CustomerOrder newOrder = restTemplate.postForObject(ordersServiceUrl, request, CustomerOrder.class);
             assert newOrder != null;
-            return getOrder(newOrder.getId(), model, principal);
+            return getOrder(newOrder.getId(), "NEW ORDER, ID: " + newOrder.getId(), model, principal);
         } catch (Exception e) {
-            return getOrder(-1, model, principal);
+            return getOrder(-1, e.getMessage().substring(e.getMessage().indexOf("message") + 10, e.getMessage().indexOf("path") - 3), model, principal);
         }
     }
 }
