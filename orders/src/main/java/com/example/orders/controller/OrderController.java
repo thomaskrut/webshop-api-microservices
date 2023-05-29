@@ -94,6 +94,7 @@ public class OrderController {
 
     @PutMapping("/{orderId}")
     @ResponseStatus(HttpStatus.CREATED)
+    @Retryable(noRetryFor = ObjectNotFoundException.class, maxAttempts = 4, backoff = @Backoff(delay = 500, multiplier = 2))
     public String adjustOrderEntry(@PathVariable long orderId, @RequestBody NewOrderEntryRequest req) {
 
         orderExists(orderId).orElseThrow(() -> new ObjectNotFoundException("Order with ID " + orderId + " does not exist"));

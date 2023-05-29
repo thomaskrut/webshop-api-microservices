@@ -14,6 +14,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.Principal;
@@ -264,9 +265,9 @@ public class ThymeController {
             restTemplate.put(ordersServiceUrl + "/" + orderId, new NewOrderEntryRequest(itemId, quantity));
             return getOrder(orderId, null, model, principal);
         } catch (Exception e) {
+            System.out.println(e.getClass());
             return getOrder(orderId, e.getMessage().substring(e.getMessage().indexOf("message") + 10, e.getMessage().indexOf("path") - 3), model, principal);
         }
-
 
 
     }
