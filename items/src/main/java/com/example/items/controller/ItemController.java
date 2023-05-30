@@ -2,6 +2,7 @@ package com.example.items.controller;
 import com.example.items.model.Item;
 import com.example.items.model.ItemList;
 import com.example.items.repository.ItemRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,17 +24,20 @@ public class ItemController {
         this.itemRepository = itemRepository;
     }
 
+    @Operation(summary = "Get all items")
     @GetMapping("/")
     public ItemList getAllItems() {
         return new ItemList(itemRepository.findAll());
     }
 
+    @Operation(summary = "Get item by ID")
     @GetMapping("/{id}")
     public ResponseEntity<Item> getItemById(@PathVariable long id) {
         if (itemRepository.findById(id).isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         return ResponseEntity.ok(itemRepository.findById(id).get());
     }
 
+    @Operation(summary = "Add item")
     @PostMapping("/")
     public String createItem(@Valid @RequestBody Item item) {
 

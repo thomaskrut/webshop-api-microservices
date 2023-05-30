@@ -2,7 +2,7 @@ package com.example.orders.controller;
 
 import com.example.orders.model.*;
 import com.example.orders.repository.CustomerOrderRepository;
-
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Backoff;
@@ -36,16 +36,19 @@ public class OrderController {
         this.restTemplate = restTemplate;
     }
 
+    @Operation(summary = "Get all orders")
     @GetMapping("/")
     public OrderList getAllOrders() {
         return new OrderList(customerOrderRepository.findAll());
     }
 
+    @Operation(summary = "Get order by customer ID")
     @GetMapping("/{customerId}")
     public List<CustomerOrder> getOrdersByCustomerId(@PathVariable long customerId) {
         return customerOrderRepository.findByCustomerId(customerId);
     }
 
+    @Operation(summary = "Add order")
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     @Retryable(noRetryFor = ObjectNotFoundException.class, maxAttempts = 4, backoff = @Backoff(delay = 500, multiplier = 2))
@@ -67,6 +70,7 @@ public class OrderController {
     }
 
 
+    @Operation(summary = "Add order entry")
     @PostMapping("/{orderId}")
     @ResponseStatus(HttpStatus.CREATED)
     @Retryable(noRetryFor = ObjectNotFoundException.class, maxAttempts = 4, backoff = @Backoff(delay = 500, multiplier = 2))
@@ -91,7 +95,7 @@ public class OrderController {
         throw e;
     }
 
-
+    @Operation(summary = "Add order entry")
     @PutMapping("/{orderId}")
     @ResponseStatus(HttpStatus.CREATED)
     @Retryable(noRetryFor = ObjectNotFoundException.class, maxAttempts = 4, backoff = @Backoff(delay = 500, multiplier = 2))

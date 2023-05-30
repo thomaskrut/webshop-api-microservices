@@ -3,6 +3,7 @@ package com.example.customers.controller;
 import com.example.customers.model.Customer;
 import com.example.customers.model.CustomerList;
 import com.example.customers.repository.CustomerRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -28,11 +29,13 @@ public class CustomerController {
         this.customerRepository = customerRepository;
     }
 
+    @Operation(summary = "Get all customers")
     @GetMapping("/")
     public CustomerList getAllCustomers() {
         return new CustomerList(customerRepository.findAll());
     }
 
+    @Operation(summary = "Get customer by ID")
     @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable long id) {
         System.out.println("Customer ID: " + id);
@@ -40,6 +43,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerRepository.findById(id).get());
     }
 
+    @Operation(summary = "Add customer")
     @PostMapping("/")
     public String createCustomer(@Valid @RequestBody Customer customer) {
 
